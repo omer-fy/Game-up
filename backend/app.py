@@ -426,23 +426,6 @@ def get_current_user(current_user):
         return jsonify({"username": current_user.username}), 200
     return jsonify({"error": "User not found"}), 404
 
-# ====================================================================
-# IMPORTANT: TEMPORARY CODE FOR DATABASE INITIALIZATION ON RENDER
-# ====================================================================
-@app.route("/_internal/create-db-tables-987234")
-def create_tables():
-    try:
-        # We use a 'with app.app_context()' block to ensure the application
-        # context is available, which is needed by SQLAlchemy.
-        with app.app_context():
-            db.create_all()
-        return jsonify({"message": "Database tables created successfully!"}), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-# ====================================================================
-# END OF TEMPORARY CODE
-# ====================================================================
-
 
 # --- Create Database Tables ---
 @app.cli.command("init-db")
