@@ -1,7 +1,7 @@
 // src/pages/DashboardPage.tsx
 
 import React, { useState, useCallback } from 'react'; // Import useCallback
-import axios from 'axios';
+import api from '../api';
 import Search from '../components/Search';
 import GameCard, { Game } from '../components/Gamecard';
 
@@ -27,7 +27,7 @@ const DashboardPage = () => {
         // while the new results are loading.
 
         try {
-            const response = await axios.post('http://localhost:5000/api/search', {
+            const response = await api.post('/api/search', {
                 searchText: searchText
             });
             setSearchResults(response.data);

@@ -1,7 +1,7 @@
 // src/components/Login.tsx
 
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../api';
 import { useNavigate, Link } from 'react-router-dom'; // Import Link
 
 // 1. Define the props, including the new function
@@ -18,7 +18,7 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:5000/login', {
+            const response = await api.post('/login', {
                 identifier: identifier,
                 password: password
             });

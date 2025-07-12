@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api';
 import { Game } from '../components/Gamecard';
 import AddToList from '../components/AddGame';
 import EditGameModal from '../components/EditGameModal'; // Import the modal
@@ -42,10 +42,10 @@ const GameDetailPage = () => {
 
             try {
                 // Fetch main game details (public)
-                const gameDetailsPromise = axios.get(`http://localhost:5000/api/game/${gameId}`);
-                
+                const gameDetailsPromise = api.get(`/api/game/${gameId}`);
+
                 // Fetch library status (authenticated)
-                const libraryStatusPromise = token ? axios.get(`http://localhost:5000/api/library/status/${gameId}`, {
+                const libraryStatusPromise = token ? api.get(`/api/library/status/${gameId}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 }) : Promise.resolve(null);
 
@@ -86,7 +86,7 @@ const GameDetailPage = () => {
 
         const token = localStorage.getItem('token');
         try {
-            await axios.delete(`http://localhost:5000/api/library/${libraryStatus.id}`, {
+            await api.delete(`/api/library/${libraryStatus.id}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             // Update state to show the game is no longer in the library
@@ -101,8 +101,8 @@ const GameDetailPage = () => {
 
         const token = localStorage.getItem('token');
         try {
-            await axios.put(
-                `http://localhost:5000/api/library/${libraryStatus.id}`,
+            await api.put(
+                `/api/library/${libraryStatus.id}`,
                 { status: newStatus },
                 { headers: { 'Authorization': `Bearer ${token}` } }
             );

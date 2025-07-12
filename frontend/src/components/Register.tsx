@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api';
 import { Link } from 'react-router-dom';
 
 const Register = () => {
@@ -47,7 +47,7 @@ const Register = () => {
         // Run validation before submitting
         if (validate()) {
             try {
-                const response = await axios.post('http://localhost:5000/register', {
+                const response = await api.post('/register', {
                     username,
                     email,
                     password

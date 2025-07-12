@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../api'; // Import the API instance
 
 interface AddToListProps {
     igdbGameId: number;
@@ -31,8 +31,8 @@ const AddToList: React.FC<AddToListProps> = ({ igdbGameId, onGameAdded }) => {
         }
 
         try {
-            const response = await axios.post(
-                'http://localhost:5000/api/library',
+            const response = await api.post(
+                '/api/library',
                 {
                     igdb_game_id: igdbGameId,
                     status: selectedStatus,

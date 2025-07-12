@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api';
 import { Link } from 'react-router-dom';
 
 interface HomePageProps {
@@ -15,7 +15,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
                 const token = localStorage.getItem('token');
                 if (token) {
                     try {
-                        const response = await axios.get('http://localhost:5000/api/me', {
+                        const response = await api.get('/api/me', {
                             headers: { 'Authorization': `Bearer ${token}` }
                         });
                         setUsername(response.data.username);

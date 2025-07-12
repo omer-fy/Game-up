@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api';
 import { Link } from 'react-router-dom'; // Import Link
 import GameCard, { Game } from '../components/Gamecard';
 import EditGameModal from '../components/EditGameModal';
@@ -38,8 +38,8 @@ const MyGamesPage = () => {
         try {
             // Fetch both library and user info concurrently
             const [libraryResponse, userResponse] = await Promise.all([
-                axios.get('http://localhost:5000/api/library', { headers }),
-                axios.get('http://localhost:5000/api/me', { headers })
+                api.get('/api/library', { headers }),
+                api.get('/api/me', { headers })
             ]);
             
             setGames(libraryResponse.data);
@@ -61,7 +61,7 @@ const MyGamesPage = () => {
 
         const token = localStorage.getItem('token');
         try {
-            await axios.delete(`http://localhost:5000/api/library/${userGameId}`, {
+            await api.delete(`/api/library/${userGameId}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             // Refetch data to show the change
@@ -86,8 +86,8 @@ const MyGamesPage = () => {
 
         const token = localStorage.getItem('token');
         try {
-            await axios.put(
-                `http://localhost:5000/api/library/${editingGame.id}`,
+            await api.put(
+                `/api/library/${editingGame.id}`,
                 { status: newStatus },
                 { headers: { 'Authorization': `Bearer ${token}` } }
             );
