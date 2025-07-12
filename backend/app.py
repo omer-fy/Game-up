@@ -19,11 +19,15 @@ load_dotenv()
 
 # Initialize Flask App
 app = Flask(__name__)
+DATABASE_URL = os.getenv('DATABASE_URL')
+if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
 CORS(app) 
 
 # --- Configuration ---
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY') # Load secret key from .env
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///gameup.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL or 'sqlite:///gameup.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # --- Initialize Extensions ---
