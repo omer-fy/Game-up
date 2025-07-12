@@ -1,5 +1,10 @@
 /* src/App.css */
 
+/* Universal Box Sizing */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
 /* Basic Reset & Font */
 body {
     margin: 0;
@@ -607,6 +612,15 @@ form button:hover {
     .status-filter-button {
         padding: 0.6rem 1rem;
         font-size: 0.9rem;
+    }
+
+    .empty-list-message {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 0rem 2rem;
+      width: 100%;
+      color: #666;
+      font-size: 0.8rem;
     }
 
     /* --- Modal --- */
