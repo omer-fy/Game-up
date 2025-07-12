@@ -23,7 +23,9 @@ DATABASE_URL = os.getenv('DATABASE_URL')
 if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
-CORS(app) 
+VERCEL_URL = "https://game-up-lime.vercel.app/" 
+
+CORS(app, origins=[VERCEL_URL, "http://localhost:3000"], supports_credentials=True)
 
 # --- Configuration ---
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY') # Load secret key from .env
