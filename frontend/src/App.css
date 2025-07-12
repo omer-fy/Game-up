@@ -526,3 +526,107 @@ form button:hover {
 .homepage-button:hover {
     background-color: #0056b3;
 }
+
+/* =================================== */
+/* Responsive Styles (for mobile)    */
+/* =================================== */
+
+@media (max-width: 768px) {
+
+    /* --- General Layout --- */
+    .main-content {
+        padding: 1rem; /* Reduce padding on smaller screens */
+    }
+
+    /* --- Navbar --- */
+    .navbar {
+        padding: 0 1rem;
+    }
+    .navbar-content {
+        padding: 0.5rem 0;
+    }
+    .navbar-links a, .logout-button {
+        margin-left: 0.75rem; /* Reduce space between links */
+        font-size: 0.9rem;
+    }
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
+
+    /* --- Forms --- */
+    form {
+        min-width: auto; /* Allow forms to shrink */
+        width: 100%;
+        padding: 1.5rem;
+    }
+
+    /* --- Search Bar --- */
+    .search-form input {
+        padding: 0.8rem;
+        font-size: 1rem;
+    }
+
+    /* --- Game Cards Grid --- */
+    .search-results {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Smaller cards on mobile */
+        gap: 1rem;
+    }
+
+    /* --- Game Detail Page --- */
+    .game-detail-page {
+        padding: 1rem;
+    }
+    .game-detail-header {
+        flex-direction: column; /* Stack image and details vertically */
+        align-items: center;
+        text-align: center;
+    }
+    .game-detail-cover {
+        width: 100%;
+        max-width: 250px; /* Constrain image size */
+    }
+    .game-detail-title-section h1 {
+        font-size: 1.8rem;
+    }
+    .library-controls {
+        flex-direction: column; /* Stack status and buttons */
+        align-items: stretch;
+    }
+    .library-controls button {
+        width: 100%;
+    }
+
+    /* --- My Games Page --- */
+    .my-games-page .page-title {
+        font-size: 1.5rem;
+    }
+    .status-filters {
+        gap: 0.25rem;
+        flex-wrap: wrap; /* Allow filters to wrap onto the next line */
+    }
+    .status-filter-button {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    /* --- Modal --- */
+    .modal-content {
+        min-width: auto;
+        width: 90%;
+        padding: 1.5rem;
+    }
+    .modal-content h2 {
+        font-size: 1.2rem;
+    }
+
+    /* --- Homepage --- */
+    .homepage-container h1 {
+        font-size: 2rem;
+    }
+    .homepage-container p {
+        font-size: 1rem;
+    }
+    .homepage-links {
+        flex-direction: column;
+    }
+}
