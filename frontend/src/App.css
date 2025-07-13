@@ -532,6 +532,104 @@ form button:hover {
     background-color: #0056b3;
 }
 
+.profile-page {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.profile-info {
+    margin-bottom: 2rem;
+}
+
+.profile-info p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.profile-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    border-top: 1px solid #eee;
+    padding-top: 2rem;
+    align-items: center;
+}
+
+.ai-button, .logout-button-profile {
+    padding: 0.8rem;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    border: none;
+}
+
+.ai-button {
+    background-color: #28a745; /* A nice green */
+    color: white;
+    max-width: 400px; /* Set a fixed width */
+    border-radius: 25px;
+}
+
+.ai-button:hover {
+    background-color: #218838;
+}
+
+.logout-section {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    border-top: 1px solid #eee;
+    padding-top: 2rem;
+    align-items: center;
+}
+
+.logout-button-profile {
+    background-color: #dc3545; /* A dangerous red */
+    color: white;
+    width: 200px; /* Set a fixed width */
+    border-radius: 25px; /* Increase for a more rounded "pill" shape */
+}
+
+.logout-button-profile:hover {
+    background-color: #c82333;
+}
+
+/* Recommendations Section */
+.recommendations-section {
+    margin-top: 2rem;
+}
+
+.recommendation-card {
+    display: flex;
+    flex-direction: column;
+    /* We can reuse search-results for the grid layout */
+}
+
+.recommendation-reason {
+    background-color: #f8f9fa;
+    padding: 0.8rem;
+    border-top: 1px solid #dee2e6;
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.recommendation-reason p {
+    margin: 0;
+}
+
+.info-message {
+    font-size: 0.9rem;
+    color: #555;
+    text-align: center;
+    margin-top: -0.5rem; /* Pull it a bit closer to the button */
+}
+
 /* =================================== */
 /* Responsive Styles (for mobile)    */
 /* =================================== */

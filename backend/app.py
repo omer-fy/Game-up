@@ -3,6 +3,8 @@
 import os
 import re
 import requests
+import google.generativeai as genai
+import json
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
@@ -16,6 +18,11 @@ from sqlalchemy.exc import IntegrityError
 
 # Load environment variables from .env file
 load_dotenv()
+GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
+if GOOGLE_API_KEY:
+    genai.configure(api_key=GOOGLE_API_KEY)
+else:
+    print("Warning: GOOGLE_API_KEY not found in environment variables.")
 
 # Initialize Flask App
 app = Flask(__name__)
@@ -291,6 +298,101 @@ def get_game_details(igdb_id):
         return jsonify(game), 200
     except requests.exceptions.RequestException as e:
         return jsonify({"error": f"Failed to fetch data from IGDB: {e}"}), 502
+    
+@app.route("/api/profile", methods=['GET'])
+@token_required
+def get_user_profile(current_user):
+    # The @token_required decorator already fetches the user object for us.
+    # We can just return the data we need in a JSON format.
+    completed_games_count = UserGame.query.filter_by(user_id=current_user.id, status="Completed").count()
+    return jsonify({
+        "id": current_user.id,
+        "username": current_user.username,
+        "email": current_user.email,
+        "completed_games_count": completed_games_count
+    }), 200
+
+@app.route("/api/recommendations", methods=['GET'])
+@token_required
+def get_ai_recommendations(current_user):
+    # 1. Fetch user's completed games from our database
+    completed_games_from_db = UserGame.query.filter_by(user_id=current_user.id, status="Completed").all()
+    if not completed_games_from_db:
+        return jsonify({"error": "You need to complete at least one game to get AI recommendations."}), 400
+
+    completed_game_ids = [game.igdb_game_id for game in completed_games_from_db]
+
+    # 2. Fetch the names of these games from IGDB
+    token = get_igdb_token()
+    if not token: return jsonify({"error": "Could not authenticate with IGDB."}), 500
+
+    igdb_api_url = 'https://api.igdb.com/v4/games'
+    query_body = f'fields name; where id = ({",".join(map(str, completed_game_ids))});'
+    headers = {'Client-ID': IGDB_CLIENT_ID, 'Authorization': f'Bearer {token}'}
+    
+    try:
+        response = requests.post(igdb_api_url, headers=headers, data=query_body)
+        response.raise_for_status()
+        completed_games_names = [game['name'] for game in response.json()]
+    except requests.exceptions.RequestException:
+        return jsonify({"error": "Failed to fetch completed games details from IGDB."}), 502
+    
+    # 3. Craft the prompt for the AI
+    model = genai.GenerativeModel('gemini-2.5-flash')
+    
+    prompt = f"""
+    You are a video game recommendation expert. Based on this list of games a user has completed, suggest exactly 3 new games they might enjoy.
+    The user has completed: {', '.join(completed_games_names)}.
+
+    IMPORTANT INSTRUCTIONS:
+    - Do NOT suggest any of the games from the completed list.
+    - For each suggestion, provide a concise, one-sentence reason explaining why they would like it.
+    - Your response MUST be a valid JSON array of objects, and nothing else. Do not include any text before or after the JSON array.
+    - Each object in the array must have two keys: "title" (the game's exact title) and "reason" (your explanation).
+
+    Example format:
+    [
+      {{"title": "Example Game 1", "reason": "This is the reason for suggestion 1."}},
+      {{"title": "Example Game 2", "reason": "This is the reason for suggestion 2."}}
+    ]
+    """
+
+    # 4. Call the AI and process the response
+    try:
+        ai_response = model.generate_content(prompt)
+        # Clean up the response text to ensure it's valid JSON
+        cleaned_response_text = ai_response.text.strip().replace('```json', '').replace('```', '')
+        suggestions = json.loads(cleaned_response_text)
+    except (Exception) as e:
+        print(f"AI response parsing error: {e}")
+        return jsonify({"error": "Failed to get a valid recommendation from the AI service."}), 500
+    
+    # 5. For each AI suggestion, fetch full details from IGDB
+    recommended_games_data = []
+    for suggestion in suggestions:
+        game_title = suggestion.get('title')
+        if not game_title: continue
+
+        try:
+            search_query = f'fields name, cover.url; search "{game_title}"; limit 1;'
+            response = requests.post(igdb_api_url, headers=headers, data=search_query)
+            response.raise_for_status()
+            game_details = response.json()
+            if game_details:
+                # 6. Combine AI reason with IGDB details
+                game_data = game_details[0]
+                if 'cover' in game_data and 'url' in game_data['cover']:
+                    game_data['cover']['url'] = game_data['cover']['url'].replace('t_thumb', 't_cover_big')
+
+                recommended_games_data.append({
+                    "reason": suggestion.get('reason'),
+                    "details": game_data
+                })
+        except requests.exceptions.RequestException:
+            # Silently fail for one game, so one bad suggestion doesn't ruin the whole list
+            print(f"Could not fetch details for AI suggestion: {game_title}")
+
+    return jsonify(recommended_games_data), 200
     
 # --- NEW: Endpoint to check a single game's library status ---
 @app.route("/api/library/status/<int:igdb_id>", methods=['GET'])

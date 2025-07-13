@@ -18,7 +18,7 @@ const Navbar: React.FC<NavbarProps> = ({ isLoggedIn, onLogout }) => {
                         <>
                             <Link to="/dashboard">Search</Link>
                             <Link to="/my-games">My Games</Link> {/* NEW LINK */}
-                            <button onClick={onLogout} className="logout-button">Logout</button>
+                            <Link to="/profile">Profile</Link>
                         </>
                     ) : (
                         // If user is not logged in, show Login and Register

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import ProfilePage from './pages/ProfilePage';
 import './App.css';
 
 // Import Components and Pages
@@ -61,6 +62,14 @@ function App() {
                             element={
                                 isLoggedIn ? <MyGamesPage /> : <Navigate to="/login" />
                             }
+                        />
+                        <Route 
+                            path="/profile" 
+                            element={
+                                isLoggedIn 
+                                ? <ProfilePage onLogout={handleLogout} /> 
+                                : <Navigate to="/login" />
+                            } 
                         />
 
                         {/* Redirect any other path to the homepage */}
