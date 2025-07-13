@@ -605,6 +605,11 @@ form button:hover {
     margin-top: 2rem;
 }
 
+.recommendations-section .error-message {
+    text-align: center;
+    margin-top: 1rem;
+}
+
 .recommendation-card {
     display: flex;
     flex-direction: column;
@@ -628,6 +633,14 @@ form button:hover {
     color: #555;
     text-align: center;
     margin-top: -0.5rem; /* Pull it a bit closer to the button */
+}
+
+.loading-screen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-size: 1.5rem;
 }
 
 /* =================================== */

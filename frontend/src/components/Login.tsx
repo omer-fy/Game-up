@@ -6,10 +6,10 @@ import { useNavigate, Link } from 'react-router-dom'; // Import Link
 
 // 1. Define the props, including the new function
 interface LoginProps {
-    onLoginSuccess: () => void;
+    onAuthSuccess: () => void;
 }
 
-const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
+const Login: React.FC<LoginProps> = ({ onAuthSuccess }) => {
     const [identifier, setIdentifier] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
@@ -26,8 +26,8 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
             localStorage.setItem('token', response.data.token);
             
             // 2. Call the function passed from App.tsx
-            onLoginSuccess();
-            
+            onAuthSuccess();
+
             // Navigate to the dashboard on successful login
             navigate('/dashboard');
 

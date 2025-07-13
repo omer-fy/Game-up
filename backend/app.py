@@ -133,7 +133,12 @@ def register_user():
     db.session.add(new_user)
     db.session.commit()
 
-    return jsonify({"message": f"User '{username}' created successfully"}), 201
+    token = jwt.encode({
+        'user_id': new_user.id,
+        'exp': datetime.now(timezone.utc) + timedelta(hours=24)
+    }, app.config['SECRET_KEY'], algorithm='HS256')
+
+    return jsonify({"message": f"User '{username}' created successfully", "token": token}), 201
 
 # --- NEW LOGIN ENDPOINT ---
 @app.route("/login", methods=['POST'])

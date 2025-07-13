@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-const Register = () => {
+interface RegisterProps {
+    onAuthSuccess: () => void; // Expect the function as a prop
+}
+
+const Register: React.FC<RegisterProps> = ({ onAuthSuccess }) => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -40,6 +45,8 @@ const Register = () => {
         return Object.keys(newErrors).length === 0;
     };
 
+    const navigate = useNavigate(); // Initialize the navigate function
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setServerMessage(''); // Clear previous server messages
@@ -58,6 +65,13 @@ const Register = () => {
                 setEmail('');
                 setPassword('');
                 setErrors({});
+
+                const token = response.data.token;
+                if (token) {
+                    localStorage.setItem('token', token); // 1. Save the token
+                    onAuthSuccess();                      // 2. Tell App.tsx we are logged in
+                    navigate('/dashboard');               // 3. Redirect to the dashboard
+                }
             } catch (error: any) {
                 if (error.response && error.response.data) {
                     setServerMessage(error.response.data.error);
